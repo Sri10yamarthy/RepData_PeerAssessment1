@@ -8,7 +8,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ## source gridExtra to plot graphs on different panels with ggplot
-```{r}
+```{r,echo=TRUE}
 library(gridExtra)
 library(utils)
 library(stats)
@@ -19,18 +19,18 @@ library(ggplot2)
 library(dplyr)
 ```
 ### Loading and preprocessing the data
-```{r}
+```{r,echo=TRUE}
 tb1<-read.csv("~/Desktop/Coursera/Data\ science/data/activity.csv",header=TRUE)
 ```
 ## table with all rows having NA.
-```{r}
+```{r,echo=TRUE}
 tb2<-filter(tb1,!is.na(steps))
 tb2_impute<-filter(tb1,is.na(steps))
 ```
 ## Q1) What is mean total number of steps taken per day?
 
 ## Total Steps grouped by date
-```{r}
+```{r,echo=TRUE}
 tb3<-tb2 %>%
     group_by(date) %>%
     summarize(Total.Steps = sum(steps)) %>%
@@ -39,16 +39,17 @@ tb4<-mutate(tb3,date=as.Date(date,"%m/%d/%y"))
 date_tb<-table(tb4$date)
 ```
 ## plot the timeseris for Total steps.
-```{r}
+```{r,echo=TRUE}
 barplot(tb4$Total.Steps,
         date_tb,names.arg=tb4$date,xlab="date",ylab="Steps")
 ```
 ## print the plot.
-```{r}
-dev.print()
+```{r,echo=TRUE}
+dev.copy(png,"plot50.png")
+dev.off()
 ```
 ## Mean and Median of steps
-```{r}
+```{r,echo=TRUE}
 tb5<-tb2 %>%
     group_by(date) %>%
     summarize(Average.Steps=mean(steps),Median.Steps = median(steps)) %>%
@@ -63,12 +64,12 @@ abline(h=tb5$Median.Steps,lwd=2,col="Red")
 
 ## print the plot
 
-dev.print()
+dev.copy(png,"plot51.png")
 dev.off()
 ```
 
 ###What is the average daily activity pattern?
-```{r}
+```{r,echo=TRUE}
 tb2_time<-tb2 %>%
     group_by(interval) %>%
     summarize(Average.Steps=mean(steps)) %>%
@@ -82,12 +83,12 @@ g3<- g2 + geom_point(data=max_tb2_time,size=4,alpha=1/2) +
 
 g3
 
-dev.print()
+dev.copy(png,"plot52.png")
 dev.off()
 ```
 
 ## Imputing Missing values
-```{r}
+```{r,echo=TRUE}
 
 impute_rows<-nrow(tb2_impute)
 
@@ -117,12 +118,12 @@ date_tb<-table(tb4_imp$date)
 barplot(tb4_imp$Total.Steps,
         date_tb,names.arg=tb4_imp$date,xlab="date",ylab="Steps")
 
-dev.print()
+dev.copy(png,"plot53.png")
 dev.off()
 
 ```
 ## Impute and No Impute Comparison
-```{r}
+```{r,echo=TRUE}
 
 tb_imp<-full_join(tb2_imp,tb5_imp,by="date")
 g10<-ggplot(tb_imp) + geom_bar(aes(x=date,y=Total.Steps),stat="identity") + 
@@ -133,6 +134,8 @@ g12<-ggplot(tb_imp,aes(x=date,y=Median.Steps,group=1)) +
     geom_point() + geom_line() + ggtitle("With Impute")
 
 grid.arrange(g10,g11,g12,ncol=3)
+dev.copy(png,"plot54.png")
+dev.off()
 
 tb_no_imp<-full_join(tb4,tb6,by="date")
 g20<-ggplot(tb_no_imp) + geom_bar(aes(x=date,y=Total.Steps),stat="identity") +
@@ -143,11 +146,11 @@ g22<-ggplot(tb_no_imp,aes(x=date,y=Median.Steps,group=1)) +
     geom_point() + geom_line() + ggtitle("No Impute")
 
 grid.arrange(g10,g11,g12,g20,g21,g22,ncol=3,nrow=2)
-dev.print()
+dev.copy(png,"plot55.png")
 dev.off()
 ```
 ## Weekday and Weekend Average steps comparison
-```{r}
+```{r,echo=TRUE}
 tb6_week<-mutate(tb6,day_of_the_week = format(tb6$date,'%A'))
 
 tb6_week<-mutate(tb6_week,factors_week=factor(tb6_week$day_of_the_week))
@@ -161,7 +164,7 @@ g51<-ggplot(tb6_week,aes(x=date,y=Average.Steps)) +
 
 g51
 
-dev.print()
+dev.copy(png,"plot56.png")
 dev.off()
 
 ```
@@ -171,8 +174,8 @@ dev.off()
 
 You can also embed plots, for example:
 
-#```{r, echo=FALSE}
+```{r, echo=TRUE}
 #plot(cars)
-#```
+```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

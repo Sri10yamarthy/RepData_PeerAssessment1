@@ -44,9 +44,9 @@ barplot(tb4$Total.Steps,
         date_tb,names.arg=tb4$date,xlab="date",ylab="Steps")
 ```
 ## print the plot.
-#```{r}
-#dev.print()
-#```
+```{r}
+dev.print()
+```
 ## Mean and Median of steps
 ```{r}
 tb5<-tb2 %>%
